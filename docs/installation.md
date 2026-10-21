@@ -15,6 +15,17 @@ Inside a session:
 Start a new session. The skill loads when a request matches its description, or call it with
 `/video-walkthrough:video-walkthrough`. Update with `/plugin update video-walkthrough@video-walkthrough-skill`.
 
+## Claude Code desktop app
+
+1. In the prompt box, run `/plugin marketplace add Mfrostbutter/video-walkthrough-skill`.
+2. Click **+** next to the prompt box, then **Plugins**, **Add plugin**, select **video-walkthrough** and pick
+   a scope (user or project).
+3. Start a new session.
+
+No prompt for the plugin? Run `/plugin install video-walkthrough@video-walkthrough-skill` in the prompt box
+instead. The app runs the scripts locally, so ffmpeg, Python with Playwright, and the ElevenLabs key must be
+on this machine. The claude.ai chat app has no local execution and cannot run this skill.
+
 ## Clone and symlink
 
 Stays in sync with `git pull`.

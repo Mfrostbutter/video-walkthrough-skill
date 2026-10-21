@@ -34,12 +34,21 @@ Built for [Claude Code](https://claude.com/claude-code) and any agent that suppo
 
 ## Install
 
-Claude Code, inside a session:
+Claude Code CLI, inside a session:
 
 ```text
 /plugin marketplace add Mfrostbutter/video-walkthrough-skill
 /plugin install video-walkthrough@video-walkthrough-skill
 ```
+
+Claude Code desktop app:
+
+1. In the prompt box, run `/plugin marketplace add Mfrostbutter/video-walkthrough-skill`.
+2. Click **+** next to the prompt box, then **Plugins**, **Add plugin**, select **video-walkthrough** and pick a scope.
+3. Start a new session.
+
+The desktop app runs the skill's scripts on your machine, so the [requirements](#requirements) below still
+apply. The claude.ai chat app cannot run ffmpeg or Playwright, so the skill does not produce video there.
 
 Or clone and symlink the skill folder:
 
