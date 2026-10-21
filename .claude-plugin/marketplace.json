@@ -1,0 +1,20 @@
+{
+  "name": "video-walkthrough-skill",
+  "owner": {
+    "name": "Michael Frostbutter",
+    "url": "https://github.com/Mfrostbutter"
+  },
+  "plugins": [
+    {
+      "name": "video-walkthrough",
+      "source": "./",
+      "description": "Narrated walkthrough videos of a running web app: ElevenLabs voiceover, Playwright captures paced to the voice, HTML cards, ffmpeg assembly.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["video", "walkthrough", "demo", "playwright", "ffmpeg", "elevenlabs", "n8n"]
+    }
+  ],
+  "metadata": {
+    "description": "Produce professional, automated video walkthroughs of workflows, automations and applications."
+  }
+}

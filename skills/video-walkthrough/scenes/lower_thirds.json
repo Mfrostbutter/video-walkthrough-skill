@@ -1,0 +1,13 @@
+{
+  "_kicker": "Product name",
+  "admin": {
+    "02": "Three layers, one decision",
+    "03": "Instance config: the floor and named policies",
+    "04": "Create a policy credential"
+  },
+  "customer": {
+    "02": "Works like the stock node, checked before it sends",
+    "03": "Builders work as usual",
+    "04": "Blocked requests explain themselves"
+  }
+}

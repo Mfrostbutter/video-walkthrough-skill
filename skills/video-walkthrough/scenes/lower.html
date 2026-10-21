@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Lower third</title>
+<link rel="stylesheet" href="brand.css">
+<style>
+  html, body { background: transparent !important; width: auto; height: auto; }
+  #lt { display: inline-flex; align-items: center; gap: 18px; padding: 18px 28px 18px 22px;
+        background: rgba(25,25,25,0.88); border-left: 6px solid var(--type-accent); border-radius: 0 10px 10px 0; }
+  #lt .t { font-size: 34px; font-weight: 500; color: var(--type-primary); white-space: nowrap; }
+  #lt .k { font-size: 18px; color: var(--type-accent); white-space: nowrap; padding-top: 4px; }
+</style></head>
+<body>
+  <!-- Screenshot #lt with omit_background=True. ?text= is the caption, ?kicker= the small label (default below). -->
+  <div id="lt"><span class="k mono" id="k">Product name</span><span class="t" id="t">Title</span></div>
+  <script>
+    const q = new URLSearchParams(location.search);
+    document.getElementById('t').textContent = q.get('text') || '';
+    if (q.get('kicker')) document.getElementById('k').textContent = q.get('kicker');
+  </script>
+</body></html>

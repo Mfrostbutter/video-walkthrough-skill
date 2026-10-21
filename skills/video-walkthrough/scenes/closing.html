@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Closing</title>
+<link rel="stylesheet" href="brand.css">
+<style>
+  .wrap { position: absolute; left: 96px; top: 220px; width: 1728px; }
+  h1 { font-size: 72px; font-weight: 500; line-height: 1.08; margin-bottom: 56px; }
+  .step { display: grid; grid-template-columns: 90px 1fr; gap: 28px; align-items: start; margin-bottom: 44px; }
+  .num { font-size: 56px; color: var(--type-accent); font-weight: 500; line-height: 1; padding-top: 8px; }
+  .step h2 { font-size: 40px; font-weight: 500; margin-bottom: 14px; }
+  .step p { font-size: 30px; color: var(--type-secondary); line-height: 1.35; max-width: 1400px; }
+  code { display: block; margin-top: 16px; font-family: var(--font-mono); font-size: 28px; color: var(--type-primary);
+         background: var(--background-secondary); border-left: 4px solid var(--type-accent); padding: 18px 24px; border-radius: 6px; white-space: pre; }
+  .tag { position: absolute; left: 96px; bottom: 96px; font-size: 44px; font-weight: 500; }
+  .tag span { color: var(--type-accent); }
+</style></head>
+<body>
+  <!-- Two numbered steps fit above the tag line; a third step needs smaller type or a second card. -->
+  <div class="logo"><img src="file:///abs/path/logo-on-dark.svg" alt="logo"></div>
+  <div class="wrap">
+    <h1 class="fade">Closing headline</h1>
+    <div class="step fade d1">
+      <div class="num">1</div>
+      <div>
+        <h2>First setting</h2>
+        <p>What it does for the viewer, one line.</p>
+        <code>SETTING_ONE=value</code>
+      </div>
+    </div>
+    <div class="step fade d2">
+      <div class="num">2</div>
+      <div>
+        <h2>Second setting</h2>
+        <p>What it does for the viewer, one line.</p>
+        <code>SETTING_TWO=true</code>
+      </div>
+    </div>
+  </div>
+  <div class="tag fade d3">Product name: <span>the line the voice ends on.</span></div>
+  <div class="bar"></div>
+</body></html>

@@ -1,0 +1,24 @@
+{
+  "name": "video-walkthrough",
+  "version": "1.0.0",
+  "description": "Narrated walkthrough videos of a running web app: ElevenLabs voiceover, Playwright captures paced to the voice, HTML cards, ffmpeg assembly.",
+  "author": {
+    "name": "Michael Frostbutter",
+    "url": "https://github.com/Mfrostbutter"
+  },
+  "repository": "https://github.com/Mfrostbutter/video-walkthrough-skill",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Video walkthrough",
+    "shortDescription": "Narrated walkthrough videos of a running web app, end to end",
+    "longDescription": "Writes a per-scene voice script for the audience, generates the voiceover with ElevenLabs, films each scene with Playwright paced to the narration, renders title, lower-third, code and closing cards from HTML, and assembles the cut with ffmpeg. Two cuts from one shoot; re-shoot one scene with one command.",
+    "developerName": "Michael Frostbutter",
+    "category": "Productivity",
+    "capabilities": ["Instructions"],
+    "defaultPrompt": [
+      "Make a three minute admin walkthrough of the app at http://localhost:5678 for the customer's platform team.",
+      "Re-cut the existing walkthrough as a 90 second customer overview using the same captures."
+    ]
+  }
+}

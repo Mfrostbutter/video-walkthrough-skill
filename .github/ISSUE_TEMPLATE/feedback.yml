@@ -1,0 +1,45 @@
+name: Skill feedback
+description: Report an install problem, a capture that misbehaves, or a trap worth recording.
+title: "[Feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include credentials, session cookies, customer data, or recordings of real accounts.
+        Use synthetic examples.
+  - type: input
+    id: environment
+    attributes:
+      label: Agent, app and versions
+      placeholder: "Claude Code 2.x; video-walkthrough 1.0.0; n8n 2.35; ffmpeg 7.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Stage
+      options:
+        - Install
+        - Voice script or voiceover
+        - Cards and overlays
+        - Capture
+        - Assembly
+        - Review and delivery
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: What happened, and the command or scene it happened on.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: A synthetic app or page is enough. Attach a frame grid if it helps, with no private data in frame.

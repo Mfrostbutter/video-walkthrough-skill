@@ -1,0 +1,25 @@
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.*
+.venv/
+*.log
+*.tmp
+*.swp
+node_modules/
+dist/
+
+# Shoot output never lives in this repository.
+vo/
+captures/
+overlays/
+review/
+out/
+_worklogs/
+*.mp4
+*.webm
+*.wav
+*.mp3
+storage_state*.json
+state.json

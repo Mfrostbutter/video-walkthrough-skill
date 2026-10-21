@@ -1,0 +1,14 @@
+{
+  "name": "video-walkthrough",
+  "version": "1.0.0",
+  "description": "Narrated walkthrough videos of a running web app: ElevenLabs voiceover, Playwright captures paced to the voice, HTML cards, ffmpeg assembly.",
+  "author": {
+    "name": "Michael Frostbutter",
+    "url": "https://github.com/Mfrostbutter"
+  },
+  "repository": "https://github.com/Mfrostbutter/video-walkthrough-skill",
+  "license": "MIT",
+  "skills": [
+    "./skills/video-walkthrough"
+  ]
+}

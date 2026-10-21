@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Code card</title>
+<link rel="stylesheet" href="brand.css">
+<style>
+  .head { position:absolute; left:96px; top:72px; right:96px; display:flex; justify-content:space-between; align-items:center; }
+  .head h1 { font-size: 40px; font-weight: 500; }
+  .env { font-family: var(--font-mono); font-size: 24px; color: var(--type-secondary); padding: 10px 18px; border:1px solid var(--background-tertiary); border-radius: 8px; transition: all .4s; }
+  .env.on { color: var(--type-primary); border-color: var(--type-accent); background: var(--background-secondary); }
+  #code { position:absolute; left:96px; top:160px; width:1728px; height:860px; overflow:hidden; background: var(--background-secondary); border-radius: 12px; padding: 28px 36px; }
+  #scroll { transition: transform .9s cubic-bezier(.2,.7,.2,1); }
+  .ln { font-family: var(--font-mono); text-transform: none; letter-spacing: 0; font-size: 23px; line-height: 1.45; white-space: pre; color: var(--type-secondary); transition: color .4s, background .4s; padding: 0 12px; border-radius: 4px; }
+  .ln.on { color: var(--type-primary); background: rgba(255,145,172,0.12); }
+  .note { position:absolute; right:96px; bottom:40px; font-size: 24px; color: var(--type-accent); opacity:0; transition: opacity .4s; }
+  .note.on { opacity:1; }
+</style></head>
+<body>
+  <!--
+    A config or code file with timed highlights. Each line is a .ln div; tag the lines a beat should light up with
+    r-<key>. The scene calls page.evaluate("hl('<key>')") at sc.at(frac); hl() highlights the rows, scrolls them into
+    view and shows the matching NOTES entry. hl('env') lights the header pill instead. Generate the .ln divs from the
+    real file (html-escape it) rather than typing them; about 33 lines are visible at this size.
+  -->
+  <div class="head"><h1>Instance configuration</h1><div class="env" id="env">CONFIG_PATH=/etc/app/config.json</div></div>
+  <div id="code"><div id="scroll">
+<div class="ln ">{</div>
+<div class="ln ">  &quot;version&quot;: 1,</div>
+<div class="ln r-require">  &quot;requirePolicy&quot;: true,</div>
+<div class="ln r-floor">  &quot;floor&quot;: {</div>
+<div class="ln r-floor">    &quot;schemes&quot;: [&quot;https&quot;],</div>
+<div class="ln r-floor">    &quot;network&quot;: { &quot;blockPrivate&quot;: true, &quot;blockMetadata&quot;: true }</div>
+<div class="ln r-floor">  },</div>
+<div class="ln ">  &quot;policies&quot;: {</div>
+<div class="ln r-finance">    &quot;finance-readonly&quot;: {</div>
+<div class="ln r-finance">      &quot;methods&quot;: [&quot;GET&quot;, &quot;HEAD&quot;],</div>
+<div class="ln r-finance">      &quot;hosts&quot;: { &quot;allow&quot;: [&quot;rates.example.com&quot;] }</div>
+<div class="ln r-finance">    }</div>
+<div class="ln ">  }</div>
+<div class="ln ">}</div>
+  </div></div>
+  <div class="note mono" id="note"></div>
+  <script>
+    const LH = 23 * 1.45;
+    const NOTES = { reload: 'Reloads when the file changes. No restart.' };
+    function hl(k) {
+      document.querySelectorAll('.ln.on').forEach(e => e.classList.remove('on'));
+      document.getElementById('env').classList.toggle('on', k === 'env');
+      const note = document.getElementById('note');
+      note.classList.remove('on');
+      if (NOTES[k]) { note.textContent = NOTES[k]; note.classList.add('on'); }
+      if (k === 'env') return;
+      const rows = [...document.querySelectorAll('.ln.r-' + k)];
+      rows.forEach(e => e.classList.add('on'));
+      if (rows.length) {
+        const first = rows[0].offsetTop; const h = rows.length * LH; const view = 860 - 56;
+        const y = h < view ? Math.max(0, first - (view - h) / 2) : first - 20;
+        document.getElementById('scroll').style.transform = 'translateY(-' + y + 'px)';
+      }
+    }
+  </script>
+</body></html>
