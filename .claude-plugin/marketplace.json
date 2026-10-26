@@ -9,7 +9,7 @@
       "name": "video-walkthrough",
       "source": "./",
       "description": "Narrated walkthrough videos of a running web app: ElevenLabs voiceover, Playwright captures paced to the voice, HTML cards, ffmpeg assembly.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "productivity",
       "tags": ["video", "walkthrough", "demo", "playwright", "ffmpeg", "elevenlabs", "n8n"]
     }

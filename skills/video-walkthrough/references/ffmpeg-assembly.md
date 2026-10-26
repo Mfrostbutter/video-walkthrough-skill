@@ -5,7 +5,7 @@
 Inputs: `0` the clip (silent h264, trimmed at `start()`), `1` the scene WAV, `2` the lower-third PNG (optional).
 
 ```
-[0:v]tpad=stop_mode=clone:stop_duration=60,trim=duration=DUR,setpts=PTS-STARTPTS,fade=t=in:st=0:d=0.5[v0]
+[0:v]tpad=stop_mode=clone:stop_duration=60,trim=duration=DUR,setpts=PTS-STARTPTS[v0]
 [2:v]format=rgba,fade=t=in:st=0.8:d=0.4:alpha=1,fade=t=out:st=DUR-2.4:d=0.4:alpha=1[lt]
 [v0][lt]overlay=x=64:y=H-h-64:shortest=0[v]
 [1:a]adelay=600|600,apad,atrim=duration=DUR[a]
@@ -13,7 +13,9 @@ Inputs: `0` the clip (silent h264, trimmed at `start()`), `1` the scene WAV, `2`
 
 - `DUR = VO_LEAD + vo_seconds + TAIL` (0.6 + VO + 1.6). The clip was recorded to at least VO + 2.0 s after
   `start()`, so `tpad` only matters when a capture ran short; it clones the last frame rather than failing.
-- `fade=t=in` on the first scene only. Scene cuts are hard; the cards animate themselves on load.
+- No fade from black. The first scene gets `trim=start=TITLE_SETTLE,setpts=PTS-STARTPTS` in front of the
+  graph (2.0 s, the title card's CSS animation), so frame 0 is the settled card. Scene cuts are hard; the
+  cards animate themselves on load.
 - The lower third fades in at 0.8 s and out 2 s before the scene ends, so it never sits over a cut. Position
   bottom-left at 64 px; move it if the app's UI has content there.
 - `adelay` shifts the VO by `VO_LEAD`; `apad` + `atrim` give every part the same length as its video, which
@@ -24,8 +26,12 @@ Inputs: `0` the clip (silent h264, trimmed at `start()`), `1` the scene WAV, `2`
 
 ## Concat and outro
 
-Parts are listed in `concat.txt` and joined with `-f concat -safe 0 -c copy -movflags +faststart`. Every part
-must share codec, resolution, frame rate and audio layout, which the per-scene encode guarantees. The outro is a
+Parts are listed in `concat.txt` and joined with `-f concat -safe 0 -i concat.txt -i <cut>-poster.jpg -map 0
+-map 1 -c copy -disposition:v:1 attached_pic -movflags +faststart`. The poster is frame `TITLE_SETTLE` of the
+first clip (`-ss 2.0 -frames:v 1 -q:v 2`); the mov muxer stores it as the `covr` item, not as a track, and
+`ffprobe` lists it as a third stream, mjpeg, `attached_pic=1`. Keep the JPG next to the MP4 for platforms that
+take a custom thumbnail. Every part must share codec, resolution, frame rate and audio layout, which the
+per-scene encode guarantees. The outro is a
 5 s loop of `overlays/outro.png` with an `anullsrc` silent track and a 0.8 s fade to black.
 
 ## Checks before calling a cut done

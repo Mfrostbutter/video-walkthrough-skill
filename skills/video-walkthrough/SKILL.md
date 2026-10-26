@@ -12,7 +12,7 @@ description: >-
   for a social clip.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Video walkthrough, ffmpeg edition
@@ -135,15 +135,20 @@ save that failed with a toast in the corner.
 
 ## 6. Assemble with ffmpeg
 
-`assemble_ffmpeg.py` per scene: pad the clip's last frame (`tpad`), trim to `VO_LEAD + vo + TAIL`, fade the
-first scene in, overlay the lower third PNG with alpha fades (in at 0.8 s, out 2 s before the end), delay the
-WAV by `VO_LEAD`, pad and trim the audio, encode h264 + AAC at 30 fps. Then concat the parts and the silent
-outro with `-c copy` and `+faststart`. `QUALITY=review` (crf 23, veryfast) renders in about a minute for a
+`assemble_ffmpeg.py` per scene: pad the clip's last frame (`tpad`), trim to `VO_LEAD + vo + TAIL`, overlay
+the lower third PNG with alpha fades (in at 0.8 s, out 2 s before the end), delay the WAV by `VO_LEAD`, pad
+and trim the audio, encode h264 + AAC at 30 fps. The first scene skips `TITLE_SETTLE` seconds (2.0) of the
+title card's CSS animation and has no fade from black, so frame 0 is the settled card. That frame is written
+to `out/<cut>-poster.jpg` and embedded as cover art at the mux (`-disposition:v:1 attached_pic`): Drive,
+Slack and Finder take their thumbnail from frame 0 or the cover, and a black or half-faded first frame is
+what a shared link showed before this. Then concat the parts and the silent outro with `-c copy` and
+`+faststart`. `QUALITY=review` (crf 23, veryfast) renders in about a minute for a
 4-minute cut; `QUALITY=final` (crf 18, slow) in a few. Different filenames, so a player holding the review
 file never blocks the final.
 
-Review: pull six frames from the assembled cut (title, a lower third, two mid-scene, closing, outro) into
-one `xstack` grid, `ffprobe` the streams, and check the VO lead with `silencedetect` on one scene. Then
+Review: pull six frames from the assembled cut (frame 0, a lower third, two mid-scene, closing, outro) into
+one `xstack` grid, `ffprobe` the streams (three: h264, aac, the mjpeg cover with `attached_pic=1`), and check
+the VO lead with `silencedetect` on one scene. Then
 render the final. Details and the filter graph are in `references/ffmpeg-assembly.md`.
 
 **Inserting a scene** (the usual "also cover X"): keep the closing card last, renumber it by renaming its

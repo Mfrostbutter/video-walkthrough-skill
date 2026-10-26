@@ -24,7 +24,8 @@ Built for [Claude Code](https://claude.com/claude-code) and any agent that suppo
 - **Cards from HTML.** Title, closing, outro, lower thirds and a code card with row highlighting, all 1920x1080
   pages with CSS animation, rendered by Playwright. Tokens live in one `brand.css`.
 - **ffmpeg assembly.** Per-scene mux with the voice, lower-third fades, concat, silent outro. A review render in
-  about a minute, a final render at crf 18.
+  about a minute, a final render at crf 18. Frame 0 is the settled title card and is embedded as cover art, so a
+  shared link shows the card instead of a black frame; a poster JPG sits next to each cut.
 - **Frame-grid review at every stage.** Four frames per clip before assembly, six from the cut before the
   final, so a wrong page, a stray cursor or a failed save is caught before anyone watches it.
 - **Two cuts from one shoot.** A customer overview and an admin cut share captures and cards and keep their

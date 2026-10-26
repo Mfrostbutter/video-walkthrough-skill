@@ -2,9 +2,11 @@
 
 IN: CUT env (default main), QUALITY env (review|final), vo/<cut>/manifest.json, captures/<cut>/clips.json,
     overlays/<cut>/lower_NN.png (optional per scene), captures/<cut>/outro.mp4 (optional), scenes/lower_thirds.json.
-OUT: out/<cut>-review.mp4 or out/<cut>-final.mp4; per-scene parts in out/work-<cut>/.
+OUT: out/<cut>-review.mp4 or out/<cut>-final.mp4; out/<cut>-poster.jpg; per-scene parts in out/work-<cut>/.
 A clip opens on the page the voice is about; the VO starts VO_LEAD seconds in; the scene ends TAIL seconds after the VO.
 Scene order is the sorted manifest id. A clip shorter than its scene holds its last frame (tpad).
+Frame 0 is the settled title card, not black and not the card's CSS fade-in: the first scene skips TITLE_SETTLE
+seconds, that frame is written as the poster and embedded as cover art, so a shared link shows the card.
 """
 import json
 import os
@@ -23,6 +25,7 @@ WORK.mkdir(parents=True, exist_ok=True)
 VO_LEAD, TAIL = 0.6, 1.6
 LT_IN, LT_OUT_BEFORE_END, LT_FADE = 0.8, 2.4, 0.4
 OUTRO_SECONDS = 5
+TITLE_SETTLE = float(os.environ.get("TITLE_SETTLE", "2.0"))  # title card animation skipped on scene 1
 CRF = "23" if QUALITY == "review" else "18"
 PRESET = "veryfast" if QUALITY == "review" else "slow"
 
@@ -42,15 +45,17 @@ for sid in sorted(VO):
         raise SystemExit(f"scene {sid} has VO but no clip in captures/{CUT}/clips.json")
     clip = CLIPS[sid]
     dur = round(VO_LEAD + s["duration"] + TAIL, 2)
-    if clip["duration"] < dur - 0.05:
-        print(f"warning: scene {sid} clip {clip['duration']}s shorter than {dur}s; last frame will be held", flush=True)
+    skip = TITLE_SETTLE if sid == first else 0
+    avail = round(clip["duration"] - skip, 2)
+    if avail < dur - 0.05:
+        print(f"warning: scene {sid} clip {avail}s after the skip, shorter than {dur}s; last frame will be held", flush=True)
     out = WORK / f"scene_{sid}.mp4"
     lower = OVER / f"lower_{sid}.png"
     inputs = ["-i", clip["clip"], "-i", s["wav"]]
-    fade_in = "fade=t=in:st=0:d=0.5" if sid == first else "null"
-    vf = f"[0:v]tpad=stop_mode=clone:stop_duration=60,trim=duration={dur},setpts=PTS-STARTPTS,{fade_in}[v0]"
+    pre = f"trim=start={skip},setpts=PTS-STARTPTS," if skip else ""
+    vf = f"[0:v]{pre}tpad=stop_mode=clone:stop_duration=60,trim=duration={dur},setpts=PTS-STARTPTS[v0]"
     if lower.exists() and sid in LOWER_THIRDS:
-        inputs += ["-loop", "1", "-framerate", "30", "-i", str(lower)]  # loop the still: a one-frame input sits at t=0, before the fade-in, and never shows
+        inputs += ["-loop", "1", "-framerate", "30", "-i", str(lower)]  # loop the still; a one-frame input ends the overlay at t=0
         vf += (f";[2:v]format=rgba,fade=t=in:st={LT_IN}:d={LT_FADE}:alpha=1,"
                f"fade=t=out:st={dur - LT_OUT_BEFORE_END:.2f}:d={LT_FADE}:alpha=1[lt];"
                f"[v0][lt]overlay=x={LT_X}:y=H-h-64:shortest=0[v]")
@@ -72,10 +77,14 @@ if outro_src.exists():
          "-crf", CRF, "-pix_fmt", "yuv420p", "-r", "30", "-c:a", "aac", "-b:a", "160k", "-shortest", str(out)])
     parts.append(out)
 
+poster = ROOT / "out" / f"{CUT}-poster.jpg"  # frame 0 of the cut: the settled title card
+run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(TITLE_SETTLE), "-i", CLIPS[first]["clip"], "-frames:v", "1", "-q:v", "2", str(poster)])
+
 lst = WORK / "concat.txt"
 lst.write_text("".join(f"file '{p}'\n" for p in parts))
 final = ROOT / "out" / f"{CUT}-{QUALITY}.mp4"
-run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", "-movflags", "+faststart", str(final)])
+run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", str(lst), "-i", str(poster), "-map", "0", "-map", "1",
+     "-c", "copy", "-disposition:v:1", "attached_pic", "-movflags", "+faststart", str(final)])
 total = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(final)],
                              capture_output=True, text=True).stdout.strip())
 print(f"wrote {final} ({total:.1f}s, {total / 60:.1f} min)")
